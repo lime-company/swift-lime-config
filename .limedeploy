@@ -1,0 +1,3 @@
+DEPLOY_POD_NAME='LimeConfig'
+DEPLOY_VERSIONING_FILES=( "Deploy/LimeConfig.podspec,LimeConfig.podspec" "Deploy/Info.plist,Source/Info.plist" )
+DEPLOY_MODE='swift-cocoapods'
