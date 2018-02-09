@@ -55,7 +55,6 @@ public extension LimeConfig {
             return nil
         }
     }
-    
 }
 
 
@@ -70,18 +69,20 @@ public extension LimeConfig {
         }
     }
     
-    public func register<MT: MutableConfig>(_ mutableObject: MT, for domain: String) -> MT {
-        return lock.synchronized { () -> MT in
+    public func register<MT: MutableConfig>(_ mutableObject: MT, for domain: String) -> MT? {
+        return lock.synchronized { () -> MT? in
             if self.initialRegistration == false {
                 D.print("LimeConfig: Error: Cannot register additional domain '\(domain)'.")
-                return mutableObject
+                return nil
             }
             if let cfg = self.mutableConfigs[domain] {
                 if let typedCfg = cfg as? MT {
+                    // You don't need to register the same config for twice
+                    D.print("LimeConfig: Warning: Domain '\(domain)' is already registered for this type.")
                     return typedCfg
                 }
                 D.print("LimeConfig: Error: Domain '\(domain)' is already registered for another object type.")
-                return mutableObject
+                return nil
             }
             self.mutableConfigs[domain] = mutableObject
             return mutableObject
