@@ -13,6 +13,10 @@
 		BFAD5AE1202CC70B0044937B /* LimeConfig.h in Headers */ = {isa = PBXBuildFile; fileRef = BFAD5AC8202CC6010044937B /* LimeConfig.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BFAD5AE3202CC77C0044937B /* LimeConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFAD5AE2202CC77C0044937B /* LimeConfig.swift */; };
 		BFAD5AE4202CC8C90044937B /* LimeConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFAD5AE2202CC77C0044937B /* LimeConfig.swift */; };
+		BFAD5AE8202DB8760044937B /* LimeConfig+Singleton.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFAD5AE7202DB8760044937B /* LimeConfig+Singleton.swift */; };
+		BFAD5AE9202DB8760044937B /* LimeConfig+Singleton.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFAD5AE7202DB8760044937B /* LimeConfig+Singleton.swift */; };
+		BFAD5AEB202DB90D0044937B /* LimeConfig+Load.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFAD5AEA202DB90D0044937B /* LimeConfig+Load.swift */; };
+		BFAD5AEC202DB90D0044937B /* LimeConfig+Load.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFAD5AEA202DB90D0044937B /* LimeConfig+Load.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -53,6 +57,8 @@
 		BFAD5AC9202CC6010044937B /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = Source/Info.plist; sourceTree = "<group>"; };
 		BFAD5AD3202CC63F0044937B /* LimeConfig.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = LimeConfig.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BFAD5AE2202CC77C0044937B /* LimeConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LimeConfig.swift; sourceTree = "<group>"; };
+		BFAD5AE7202DB8760044937B /* LimeConfig+Singleton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LimeConfig+Singleton.swift"; sourceTree = "<group>"; };
+		BFAD5AEA202DB90D0044937B /* LimeConfig+Load.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LimeConfig+Load.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -100,6 +106,8 @@
 			isa = PBXGroup;
 			children = (
 				BFAD5AE2202CC77C0044937B /* LimeConfig.swift */,
+				BFAD5AE7202DB8760044937B /* LimeConfig+Singleton.swift */,
+				BFAD5AEA202DB90D0044937B /* LimeConfig+Load.swift */,
 			);
 			path = Source;
 			sourceTree = "<group>";
@@ -280,7 +288,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BFAD5AEB202DB90D0044937B /* LimeConfig+Load.swift in Sources */,
 				BFAD5AE3202CC77C0044937B /* LimeConfig.swift in Sources */,
+				BFAD5AE8202DB8760044937B /* LimeConfig+Singleton.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -288,7 +298,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BFAD5AE9202DB8760044937B /* LimeConfig+Singleton.swift in Sources */,
 				BFAD5AE4202CC8C90044937B /* LimeConfig.swift in Sources */,
+				BFAD5AEC202DB90D0044937B /* LimeConfig+Load.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

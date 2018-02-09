@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "BFAD5AD2202CC63F0044937B"
-               BuildableName = "LimeConfig_watchOS.framework"
+               BuildableName = "LimeConfig.framework"
                BlueprintName = "LimeConfig watchOS"
                ReferencedContainer = "container:LimeConfig.xcodeproj">
             </BuildableReference>
@@ -48,7 +48,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "BFAD5AD2202CC63F0044937B"
-            BuildableName = "LimeConfig_watchOS.framework"
+            BuildableName = "LimeConfig.framework"
             BlueprintName = "LimeConfig watchOS"
             ReferencedContainer = "container:LimeConfig.xcodeproj">
          </BuildableReference>
@@ -66,7 +66,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "BFAD5AD2202CC63F0044937B"
-            BuildableName = "LimeConfig_watchOS.framework"
+            BuildableName = "LimeConfig.framework"
             BlueprintName = "LimeConfig watchOS"
             ReferencedContainer = "container:LimeConfig.xcodeproj">
          </BuildableReference>

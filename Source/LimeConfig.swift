@@ -25,57 +25,22 @@ public protocol ImmutableConfig {
 
 public protocol MutableConfig {
     func makeImmutable() -> ImmutableConfig
-    func load(fromDictionary: [String:Any]) -> Bool
 }
 
 
-public class LimeConfig {
+public class LimeConfig: NSObject {
+
+    let lock = LimeCore.Lock()
+
+    var immutableConfigs = [String:ImmutableConfig]()
     
-    public static let shared = LimeSharedConfig.sharedConfig()
+    var mutableConfigs = [String:MutableConfig]()
+
+    var initialRegistration = false
     
-    public lazy var configRegister: DomainsRegister = {
-        return DomainsRegister(self)
-    }()
-    
-    fileprivate var immutableConfigs = [String:ImmutableConfig]()
-    
-    fileprivate let lock = LimeCore.Lock()
-    
-    fileprivate init() {
+    internal override init() {
     }
 }
-
-// MARK: - LimeConfig singleton
-
-internal class LimeSharedConfig: NSObject {
-    
-    internal static func sharedConfig() -> LimeConfig {
-        let cfg = LimeConfig()
-        
-        // Try to access class selector +configurationForSharedInstance
-        if (self as AnyClass).responds(to: NSSelectorFromString("registerConfigDomains:")) {
-            // This is fun. Normally, #selector(registerConfigDomains:) swift syntax doesn't work,
-            // because the compiler is not able to resolve selector which is not implemented in the code yet.
-            // This may be implemented in your extension, but we don't know this information in the time of compilation.
-            // So, the interesting part is, that it is still "safe" to call `configurationForSharedInstance` with
-            // no warning or error :)
-            (self as AnyClass).registerConfigDomains(cfg.configRegister)
-        } else {
-            // Print error
-            D.print("LimeConfig: Error: Selector  .")
-        }
-        return cfg
-    }
-}
-
-
-@objc public protocol LimeSharedConfigProvider {
-    /// The method must return a valid configuration, which will be used for
-    /// LocalizationProvider.shared instance setup.
-    @objc static func registerConfigDomains(_ register: LimeConfig.DomainsRegister) -> Void
-}
-
-
 
 // MARK: - Immutable access -
 
@@ -98,51 +63,46 @@ public extension LimeConfig {
 // MARK: - Mutable access -
 
 public extension LimeConfig {
+
+    public func contains(domain: String) -> Bool {
+        return lock.synchronized { () -> Bool in
+            return self.mutableConfigs[domain] != nil
+        }
+    }
     
-    public class DomainsRegister: NSObject {
-        
-        fileprivate unowned var config: LimeConfig
-        
-        private var initialRegistration: Bool
-        private var mutableConfigs = [String:MutableConfig]()
-        
-        internal init(_ config: LimeConfig) {
-            self.config = config
-            self.initialRegistration = true
-        }
-        
-        public func contains(domain: String) -> Bool {
-            return config.lock.synchronized { () -> Bool in
-                return self.mutableConfigs[domain] != nil
-            }
-        }
-        
-        public func register<MT: MutableConfig>(_ mutableObject: MT, for domain: String) -> MT {
-            return config.lock.synchronized { () -> MT in
-                if self.initialRegistration == false {
-                    D.print("LimeConfig: Error: Domain '\(domain)' cannot be registered.")
-                    return mutableObject
-                }
-                if let cfg = self.mutableConfigs[domain] {
-                    if let typedCfg = cfg as? MT {
-                        return typedCfg
-                    }
-                    D.print("LimeConfig: Error: Domain '\(domain)' has already registered mutable object.")
-                }
-                self.mutableConfigs[domain] = mutableObject
+    public func register<MT: MutableConfig>(_ mutableObject: MT, for domain: String) -> MT {
+        return lock.synchronized { () -> MT in
+            if self.initialRegistration == false {
+                D.print("LimeConfig: Error: Cannot register additional domain '\(domain)'.")
                 return mutableObject
             }
-        }
-        
-        public func update<MT: MutableConfig>(_ mutableObject: MT, for domain: String) {
-            
-        }
-        
-        internal func closeInitialRegistration() {
-            config.lock.synchronized {
-                self.initialRegistration = false
-                config.immutableConfigs = self.mutableConfigs.mapValues { $0.makeImmutable() }
+            if let cfg = self.mutableConfigs[domain] {
+                if let typedCfg = cfg as? MT {
+                    return typedCfg
+                }
+                D.print("LimeConfig: Error: Domain '\(domain)' is already registered for another object type.")
+                return mutableObject
             }
+            self.mutableConfigs[domain] = mutableObject
+            return mutableObject
+        }
+    }
+    
+    public func update<MT: MutableConfig>(domain: String, updateBlock: (MT)->Void) {
+        lock.synchronized { () in
+            if let config = self.mutableConfigs[domain] as? MT {
+                updateBlock(config)
+                self.immutableConfigs[domain] = config.makeImmutable()
+            } else {
+                D.print("LimeConfig: Domain '\(domain)' is not registered and therefore cannot be updated.")
+            }
+        }
+    }
+    
+    internal func closeInitialRegistration() {
+        lock.synchronized {
+            self.initialRegistration = false
+            self.immutableConfigs = self.mutableConfigs.mapValues { $0.makeImmutable() }
         }
     }
 }
