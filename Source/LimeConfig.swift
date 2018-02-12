@@ -19,7 +19,6 @@ import LimeCore
 
 internal typealias D = LimeDebug
 
-
 public protocol ImmutableConfig {
 }
 

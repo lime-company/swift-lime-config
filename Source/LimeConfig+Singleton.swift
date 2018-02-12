@@ -16,48 +16,28 @@
 
 import Foundation
 
-/// The `LimeSharedConfig` protocol defines class method which provides
-/// configuration for shared instance of LimeConfig. You can extend
-/// the LimeConfig and implement registration for all your configuration
-/// domains.
-///
-/// Example:
-/// ```
-/// extension LimeConfig: LimeSharedConfig {
-///     @objc public static func registerConfigDomains(_ config: LimeConfig)  {
-///         MyUIConfig * uiConfig = config.register(MyUIConfig(), for: "ui")
-///         uiConfig.globalBackground = UIColor.red
-///     }
-/// }
-/// ```
-@objc public protocol LimeSharedConfig {
-    /// The method is called once per application's lifetime and gives you
-    /// opportunity to register your own domains to LimeConfig.
-    @objc static func registerConfigDomains(_ config: LimeConfig) -> Void
-}
-
 public extension LimeConfig {
     
     /// Returns the shared default object.
-    ///
-    /// You have to implement `LimeSharedConfig`
+    /// Before accessing this singleton object, you have to setup
+    /// `LimeConfig.registerConfigDomains` otherwise
     public static let shared = LimeConfig.sharedConfig()
+    
+    public static var registerConfigDomains: ((LimeConfig)->Void)?
     
     internal static func sharedConfig() -> LimeConfig {
         // Create shared config
         let config = LimeConfig()
-        // Try to access class selector +configurationForSharedInstance
-        if (self as AnyClass).responds(to: NSSelectorFromString("registerConfigDomains:")) {
-            // This is fun. Normally, #selector(registerConfigDomains:) swift syntax doesn't work,
-            // because the compiler is not able to resolve selector which is not implemented in the library's code yet.
-            // This may be implemented in your extension, but we don't know this information in the time of compilation.
-            // So, the interesting part is, that it is still "safe" to call `registerConfigDomains:` with
-            // no warning or error :)
-            (self as AnyClass).registerConfigDomains(config)
-        } else {
-            D.print("LimeConfig: Error: Selector '+registerConfigDomains:' providing shared configuration is not implemented.")
+        // Call registration closure
+        guard let registrationBlock = registerConfigDomains else {
+            fatalError("LimeConfig.onRegisterDomains is not set.")
         }
-        // Close registration...
+        
+        // Call & cleanup registration block
+        registrationBlock(config)
+        registerConfigDomains = nil
+        
+        // Close registration & return config object.
         config.closeInitialRegistration()
         return config
     }
