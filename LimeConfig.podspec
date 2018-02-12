@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name = 'LimeConfig'
-  s.version = '0.9.1'
+  s.version = '0.9.99'
   # Metadata
   s.license = { :type => 'Apache License, Version 2.0', :file => 'LICENSE' }
   s.summary = 'Shared configuration for swift libraries'
