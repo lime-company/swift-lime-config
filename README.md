@@ -1,2 +1,6 @@
-# swift-lime-config
-Little framework for shared library configurations
+# LimeConfig
+
+This library is now deprecated. Please use following pod as a replacement:
+```ruby
+pod 'LimeCore/Config'
+```
